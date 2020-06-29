@@ -11,7 +11,7 @@ goBack.addEventListener("click", () => {
 
 function setup() {
   const allEpisodes = getAllEpisodes();
-  makePageForEpisodes();
+  makePageForEpisodes(allEpisodes);
 }
 
 // display all episodes
