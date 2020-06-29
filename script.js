@@ -1,11 +1,17 @@
 //You can edit ALL of the code here
-
 let allEpisodes = getAllEpisodes();
-// let episode = document.createElement("div");
+let episodes = document.querySelectorAll(".card");
+const searchBox = document.forms["search-episodes"].querySelector("input");
+let searchResults = document.getElementById("searchResult");
+
+let goBack = document.querySelector("#go-back");
+goBack.addEventListener("click", () => {
+  makePageForEpisodes(allEpisodes);
+});
 
 function setup() {
   const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+  makePageForEpisodes();
 }
 
 // display all episodes
@@ -38,53 +44,50 @@ function makePageForEpisodes(episodeList) {
     card.appendChild(image);
     card.appendChild(summary);
     rootElem.appendChild(card);
+  });
 
-    // Adds search feature
-    // This function was working just fine but suddlenly the search box kind
-    // of become "slow" for example if I am typing "king" it shows k and then
-    // it takes ages for the other letters to appear. I am sure I didn't change
-    // anything but not sure what messed it up :(
+  // ADDS SEARCH FEATURE
+  // stugglinh with this function. It was working fine at some point.
+  // Then I dont know waht happened and the letters would take ages to appear when I type
+  // I keep changing the code. When I fix one part the other
+  //  part does not work and vice-versa.
 
-    const searchBox = document.forms["search-episodes"].querySelector("input");
-    searchBox.addEventListener("keyup", function (e) {
-      const searchTerm = e.target.value.toLowerCase();
-      let searchResults = document.getElementById("searchResult");
-      let episodes = document.querySelectorAll(".card");
+  searchBox.addEventListener("keyup", function (e) {
+    const searchTerm = e.target.value.toLowerCase();
 
-      let newArrayOfEpisodes = Array.from(episodes);
+    let episodes = document.querySelectorAll(".card");
+    newArrayOfEpisodes = Array.from(episodes);
 
-      newArrayOfEpisodes.forEach(function (episode) {
-        if (episode.innerText.toLowerCase().includes(searchTerm)) {
-          episode.style.display = "block";
-        } else {
-          episode.style.display = "none";
-        }
+    newArrayOfEpisodes.forEach(function (episode) {
+      if (episode.innerText.toLowerCase().includes(searchTerm)) {
+        episode.style.display = "block";
+      } else {
+        episode.style.display = "none";
+      }
+      let filteredEpisodes = newArrayOfEpisodes.filter(function (element) {
+        element.style.display === "block";
       });
-      let filteredListOfEpisodes = newArrayOfEpisodes.filter(
-        (item) => (item.style.display = "block")
-      );
-      searchResults.innerText = `Displaying ${filteredListOfEpisodes.length}/${episodes.length} episodes`;
+
+      searchResults.innerText = `Displaying ${filteredEpisodes.length}/${episodes.length} episodes`;
     });
   });
 
-  // Adds an Episode Selector
+  // ADDS AN EPISODE SELECTOR
 
   let selectInput = document.getElementById("selectedEpisode");
 
-  selectInput.addEventListener("click", function () {
-    for (let i = 0; i < allEpisodes.length; i++) {
-      let dropDownList = document.createElement("option");
+  for (let i = 0; i < allEpisodes.length; i++) {
+    let dropDownList = document.createElement("option");
 
-      selectInput.appendChild(dropDownList);
-      Option.value = `S${allEpisodes[i].season
-        .toString()
-        .padStart(2, "0")}E${allEpisodes[i].number
-        .toString()
-        .padStart(2, "0")} - ${allEpisodes[i].name}`;
+    selectInput.appendChild(dropDownList);
+    Option.value = `S${allEpisodes[i].season
+      .toString()
+      .padStart(2, "0")}E${allEpisodes[i].number
+      .toString()
+      .padStart(2, "0")} - ${allEpisodes[i].name}`;
 
-      dropDownList.innerText = Option.value;
-    }
-  });
+    dropDownList.innerText = Option.value;
+  }
 
   selectInput.addEventListener("change", function (e) {
     let theEpisode = e.target.value;
