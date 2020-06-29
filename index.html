@@ -5,16 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TV Show Project | Leida Goncalves (Leidagandy)</title>
     <link href="style.css" rel="stylesheet" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <!-- <link rel="icon" href="/favicon.ico" type="image/x-icon" /> -->
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
+    <header>
+      <div id="page-header">
+        <select id="selectedEpisode"
+          >Select an episode</select
+        >
+        <form id="search-episodes">
+          <input type="text" placeholder="Search episodes..." />
+        </form>
+        <span id="searchResult">Displaying 73/73 episodes</span>
+      </div>
+    </header>
     <div id="root"></div>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
 
     <!-- Loads YOUR javascript code -->
+    <footer>
+      <p>Data from <a href="https://tvmaze.com" target="_blank">Tv Maze</a></p>
+    </footer>
     <script src="script.js"></script>
   </body>
 </html>
