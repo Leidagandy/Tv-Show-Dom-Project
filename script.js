@@ -1,108 +1,116 @@
-//You can edit ALL of the code here
-let allEpisodes = getAllEpisodes();
-let episodes = document.querySelectorAll(".card");
-const searchBox = document.forms["search-episodes"].querySelector("input");
-let searchResults = document.getElementById("searchResult");
+//TV Show Project
 
-let goBack = document.querySelector("#go-back");
-goBack.addEventListener("click", () => {
-  makePageForEpisodes(allEpisodes);
-});
+const allEpisodes = getAllEpisodes();
+const episodeContainer = document.getElementById("cardContainer");
+const rootElem = document.getElementById("root");
+const searchInput = document.getElementById("searchEpisode");
+const episodesCount = document.getElementById("searchResult");
+const viewAllEpisodesButton = document.querySelector("#viewAllEpisodes");
 
 function setup() {
-  const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
 }
 
-// display all episodes
+// display all episodes //
 
 function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
-  // rootElem.textContent = `Got ${episodeList.length} episode(s)`;
-  getAllEpisodes().forEach((episode) => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    const cardHeader = document.createElement("div");
-    const title = document.createElement("h3");
-    const season = document.createElement("h4");
-    const image = document.createElement("img");
-    const summary = document.createElement("p");
-    summary.style.textAlign = "justify";
+  rootElem.innerHTML = "";
+  episodeList.forEach((episode) => createCard(episode));
+  episodesCount.innerText = `Displaying ${episodeList.length}/${allEpisodes.length}`;
+}
 
-    title.textContent = episode.name;
-    season.textContent = `S${episode.season
-      .toString()
-      .padStart(2, "0")}E${episode.number.toString().padStart(2, "0")}`;
+// create card //
 
-    image.src = episode.image.medium;
-    summary.innerHTML = episode.summary;
+function createCard(episode) {
+  let cardDiv = document.createElement("div");
+  cardDiv.classList.add("cardDiv");
+  let cardHeader = document.createElement("div");
+  cardHeader.classList.add("cardHeader");
+  let episodeTitle = document.createElement("h2");
+  let episodeSeason = document.createElement("h4");
+  let cardImg = document.createElement("img");
+  let summary = document.createElement("p");
+  episodeTitle.textContent = episode.name;
+  episodeSeason.textContent = `${formatedEpisodeNum(
+    episode.season,
+    episode.number
+  )}`;
+  cardImg.src = episode.image.medium;
+  summary.innerHTML = episode.summary;
+  cardHeader.appendChild(episodeTitle);
+  cardHeader.appendChild(episodeSeason);
+  cardDiv.appendChild(cardHeader);
+  cardDiv.appendChild(cardImg);
+  cardDiv.appendChild(summary);
+  rootElem.appendChild(cardDiv);
+}
 
-    cardHeader.appendChild(title);
-    cardHeader.appendChild(season);
-    cardHeader.classList.add("header-title");
-    card.appendChild(cardHeader);
-    card.appendChild(image);
-    card.appendChild(summary);
-    rootElem.appendChild(card);
+// Format season and episode numbers to 2 digits //
+
+function formatedEpisodeNum(season, episode) {
+  if (season.toString().length < 2) {
+    season = "0" + season;
+  }
+  if (episode.toString().length < 2) {
+    episode = "0" + episode;
+  }
+  return `S${season}E${episode}`;
+}
+
+// Add search functionality //
+
+searchInput.addEventListener("keyup", searchTerm);
+
+function searchTerm() {
+  let termSearched = searchInput.value.toLowerCase();
+  let matchingEpisodes = allEpisodes.filter((episode) => {
+    return (episode.summary + episode.name)
+      .toLowerCase()
+      .includes(termSearched);
   });
+  makePageForEpisodes(matchingEpisodes);
+}
 
-  // ADDS SEARCH FEATURE
-  // stugglinh with this function. It was working fine at some point.
-  // Then I dont know waht happened and the letters would take ages to appear when I type
-  // I keep changing the code. When I fix one part the other
-  //  part does not work and vice-versa.
+// Add dropdown menu //
 
-  searchBox.addEventListener("keyup", function (e) {
-    const searchTerm = e.target.value.toLowerCase();
+let selectDropdown = document.getElementById("selectedEpisode");
 
-    let episodes = document.querySelectorAll(".card");
-    newArrayOfEpisodes = Array.from(episodes);
-
-    newArrayOfEpisodes.forEach(function (episode) {
-      if (episode.innerText.toLowerCase().includes(searchTerm)) {
-        episode.style.display = "block";
-      } else {
-        episode.style.display = "none";
-      }
-      let filteredEpisodes = newArrayOfEpisodes.filter(function (element) {
-        element.style.display === "block";
-      });
-
-      searchResults.innerText = `Displaying ${filteredEpisodes.length}/${episodes.length} episodes`;
-    });
-  });
-
-  // ADDS AN EPISODE SELECTOR
-
-  let selectInput = document.getElementById("selectedEpisode");
-
+function makeDropdownMenu() {
   for (let i = 0; i < allEpisodes.length; i++) {
     let dropDownList = document.createElement("option");
 
-    selectInput.appendChild(dropDownList);
+    selectDropdown.appendChild(dropDownList);
     Option.value = `S${allEpisodes[i].season
       .toString()
       .padStart(2, "0")}E${allEpisodes[i].number
       .toString()
       .padStart(2, "0")} - ${allEpisodes[i].name}`;
-
     dropDownList.innerText = Option.value;
   }
-
-  selectInput.addEventListener("change", function (e) {
-    let theEpisode = e.target.value;
-
-    theEpisode = theEpisode.slice(0, 6);
-    let episodes = document.querySelectorAll(".card");
-
-    Array.from(episodes).forEach(function (episode) {
-      if (episode.innerText.includes(theEpisode)) {
-        episode.style.display = "block";
-      } else {
-        episode.style.display = "none";
-      }
-    });
-  });
 }
+makeDropdownMenu();
+
+//Displays the selected episode from the dropdown menu//
+
+selectDropdown.addEventListener("change", function (e) {
+  let theEpisode = e.target.value;
+
+  theEpisode = theEpisode.slice(0, 6);
+  let episodes = document.querySelectorAll(".cardDiv");
+
+  Array.from(episodes).forEach(function (episode) {
+    if (episode.innerText.includes(theEpisode)) {
+      episode.style.display = "block";
+    } else {
+      episode.style.display = "none";
+    }
+  });
+});
+
+// add button to go back to all episodes //
+
+viewAllEpisodesButton.addEventListener("click", (e) => {
+  makePageForEpisodes(allEpisodes);
+});
 
 window.onload = setup;
