@@ -1,6 +1,22 @@
 //TV Show Project
+let allEpisodes = [];
+const api_url = "https://api.tvmaze.com/shows/82/episodes";
 
-const allEpisodes = getAllEpisodes();
+function getAllEpisodes() {
+  fetch(api_url)
+    .then((response) => response.json())
+    .then((episodeArray) => {
+      allEpisodes = [...episodeArray];
+      makePageForEpisodes(episodeArray);
+      makeDropdownMenu(allEpisodes);
+      // return allEpisodes;
+    })
+    .catch((error) => console.log(error));
+}
+// getAllEpisodes();
+
+// const allEpisodes = getAllEpisodes();
+// console.log(allEpisodes);
 const episodeContainer = document.getElementById("cardContainer");
 const rootElem = document.getElementById("root");
 const searchInput = document.getElementById("searchEpisode");
@@ -72,8 +88,9 @@ function searchTerm() {
 }
 
 // Add dropdown menu //
-
+// console.log(allEpisodes);
 let selectDropdown = document.getElementById("selectedEpisode");
+console.log(allEpisodes);
 
 function makeDropdownMenu() {
   for (let i = 0; i < allEpisodes.length; i++) {
@@ -94,7 +111,7 @@ makeDropdownMenu();
 
 selectDropdown.addEventListener("change", function (e) {
   let theEpisode = e.target.value;
-
+  console.log(selectDropdown);
   theEpisode = theEpisode.slice(0, 6);
   let episodes = document.querySelectorAll(".cardDiv");
 
@@ -106,11 +123,21 @@ selectDropdown.addEventListener("change", function (e) {
     }
   });
 });
-
 // add button to go back to all episodes //
 
 viewAllEpisodesButton.addEventListener("click", (e) => {
   makePageForEpisodes(allEpisodes);
 });
 
-window.onload = setup;
+window.onload = getAllEpisodes();
+
+// const api_url = "https://api.tvmaze.com/shows/82/episodes";
+
+//       async function getAllEpisodes() {
+//         const response = await fetch(api_url);
+//         const data = await response.json();
+//         const allEpisodes = data;
+//         console.log(data);
+//       }
+//       getAllEpisodes();
+// //////////////////
