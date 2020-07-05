@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TV Show Project | Leida Goncalves (Leidagandy)</title>
     <link href="style.css" rel="stylesheet" />
-    <!-- <link rel="icon" href="/favicon.ico" type="image/x-icon" /> -->
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
     <header>
       <div id="page-header">
-        <select id="selectedEpisode"
-          >Select an episode</select
+        <select id="selectedEpisode">
+          <option id="selectOption">Select an episode</option></select
         >
         <form>
           <input
@@ -22,7 +21,7 @@
             placeholder="Search episodes..."
           />
         </form>
-        <span id="searchResult">Displaying 73/73 episodes</span>
+        <span id="searchResult"></span>
       </div>
     </header>
     <div id="root"></div>

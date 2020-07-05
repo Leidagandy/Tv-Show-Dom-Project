@@ -1,27 +1,24 @@
 //TV Show Project
 let allEpisodes = [];
-const api_url = "https://api.tvmaze.com/shows/82/episodes";
+const api_url = "https://api.tvmaze.com/shows/179/episodes";
 
 function getAllEpisodes() {
   fetch(api_url)
     .then((response) => response.json())
-    .then((episodeArray) => {
-      allEpisodes = [...episodeArray];
-      makePageForEpisodes(episodeArray);
+    .then((episodesArray) => {
+      allEpisodes = Array.from(episodesArray);
+      makePageForEpisodes(episodesArray);
       makeDropdownMenu(allEpisodes);
-      // return allEpisodes;
     })
     .catch((error) => console.log(error));
 }
-// getAllEpisodes();
 
-// const allEpisodes = getAllEpisodes();
-// console.log(allEpisodes);
 const episodeContainer = document.getElementById("cardContainer");
 const rootElem = document.getElementById("root");
 const searchInput = document.getElementById("searchEpisode");
 const episodesCount = document.getElementById("searchResult");
-const viewAllEpisodesButton = document.querySelector("#viewAllEpisodes");
+const viewAllEpisodesButton = document.getElementById("viewAllEpisodes");
+const selectOption = document.getElementById("selectOption");
 
 function setup() {
   makePageForEpisodes(allEpisodes);
@@ -43,7 +40,7 @@ function createCard(episode) {
   let cardHeader = document.createElement("div");
   cardHeader.classList.add("cardHeader");
   let episodeTitle = document.createElement("h2");
-  let episodeSeason = document.createElement("h4");
+  let episodeSeason = document.createElement("h3");
   let cardImg = document.createElement("img");
   let summary = document.createElement("p");
   episodeTitle.textContent = episode.name;
@@ -88,7 +85,7 @@ function searchTerm() {
 }
 
 // Add dropdown menu //
-// console.log(allEpisodes);
+
 let selectDropdown = document.getElementById("selectedEpisode");
 console.log(allEpisodes);
 
@@ -130,14 +127,3 @@ viewAllEpisodesButton.addEventListener("click", (e) => {
 });
 
 window.onload = getAllEpisodes();
-
-// const api_url = "https://api.tvmaze.com/shows/82/episodes";
-
-//       async function getAllEpisodes() {
-//         const response = await fetch(api_url);
-//         const data = await response.json();
-//         const allEpisodes = data;
-//         console.log(data);
-//       }
-//       getAllEpisodes();
-// //////////////////
