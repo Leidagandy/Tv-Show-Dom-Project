@@ -1,6 +1,5 @@
 //TV Show Project
 const allShows = getAllShows();
-// console.log(allShows);
 let allEpisodes = [];
 const api_url = "https://api.tvmaze.com/shows/179/episodes";
 const episodeContainer = document.getElementById("cardContainer");
@@ -9,8 +8,9 @@ const searchInput = document.getElementById("searchEpisode");
 const episodesCount = document.getElementById("searchResult");
 const viewAllEpisodesButton = document.getElementById("viewAllEpisodes");
 const showDropdown = document.getElementById("showDropdown");
+let episodeDropdown = document.getElementById("selectedEpisode");
 
-//--------------------sort shows alphabetically----------------
+//--------------------Sort shows alphabetically----------------
 
 allShows.sort((a, b) => {
   let showA = a.name.toLowerCase();
@@ -39,18 +39,79 @@ function getAllEpisodes(url) {
 }
 
 function setup() {
-  makePageForEpisodes(allEpisodes);
+  // makePageForEpisodes(allEpisodes);
+  makePageForShows(allShows);
   makeTvShowDropdownMenu();
 }
 
-// -----------------display all episodes-----------------------------
+// -----------------Display all shows-----------------------------
 
+const imageNotAvailable =
+  "https://sainfoinc.com/wp-content/uploads/2018/02/image-not-available.jpg";
+
+function makePageForShows(showList) {
+  rootElem.innerHTML = "";
+
+  showList.forEach(function (show) {
+    const showCard = document.createElement("div");
+    const showCardHeader = document.createElement("div");
+    showCard.appendChild(showCardHeader);
+
+    let showTitle = document.createElement("h2");
+    const showLink = document.createElement("a");
+    showLink.classList.add = "showLink";
+    showLink.href = "";
+    showLink.textContent = show.name;
+
+    showTitle.appendChild(showLink);
+    showCardHeader.appendChild(showTitle);
+
+    const showImage = document.createElement("img");
+    showImage.setAttribute(
+      "src",
+      show.image ? show.image.medium : imageNotAvailable
+    );
+    showCard.appendChild(showImage);
+    showInfo = document.createElement("div");
+    showInfo.innerHTML = `<p>Genres:${show.genres}</p>
+    <p>Status:${show.status}</p>
+    <p>Rating:${show.rating.average}</p>
+    <p>Runtime:${show.runtime}</p>`;
+    showCard.appendChild(showInfo);
+
+    const showSummary = document.createElement("p");
+    showSummary.innerHTML = show.summary;
+    showCard.appendChild(showSummary);
+    rootElem.appendChild(showCard);
+  });
+  linksCliked = document.querySelectorAll(".showLink");
+  linksCliked.forEach((link) => link.addEventListener("click", showCliked));
+}
+//   ... When a show is clicked fetch the present episodes for that show
+// enabling episode search and selection as before, hide the shows listing view
+function showCliked(event) {
+  episodeDropdown.innerHTML = "";
+  let showId = event.target.id;
+  fetch(`https://api.tvmaze.com/shows/${showId}/episodes`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      makePageForEpisodes(data);
+      makeEpisodeMenu(data);
+    })
+    .catch((error) => console.log(error));
+  episodeDropdown.value = showId;
+}
+
+// ----------------Make page for episodes--------------------------
 function makePageForEpisodes(episodeList) {
   rootElem.innerHTML = "";
   episodeList.forEach((episode) => createCard(episode));
   episodesCount.innerText = `Displaying ${episodeList.length}/${allEpisodes.length}`;
 }
 //--------------- creates show dropdown menu-------------------------
+
 function makeTvShowDropdownMenu() {
   allShows.forEach((show) => {
     const showOption = document.createElement("option");
@@ -65,7 +126,7 @@ function makeTvShowDropdownMenu() {
     getAllEpisodes(url);
   });
 }
-// -------------------create card //--------------------------------
+// -------------------create card for episodes --------------------------------
 
 function createCard(episode) {
   let cardDiv = document.createElement("div");
@@ -81,7 +142,11 @@ function createCard(episode) {
     episode.season,
     episode.number
   )}`;
-  cardImg.src = episode.image.medium;
+  // cardImg.src = episode.image.medium;
+  cardImg.setAttribute(
+    "src",
+    episode.image ? episode.image.medium : imageNotAvailable
+  );
   summary.innerHTML = episode.summary;
   cardHeader.appendChild(episodeTitle);
   cardHeader.appendChild(episodeSeason);
@@ -105,23 +170,33 @@ function formatedEpisodeNum(season, episode) {
 
 // ------------Add search functionality //----------------------------
 
-searchInput.addEventListener("keyup", searchTerm);
+searchInput.addEventListener("input", searchTerm);
 
-function searchTerm() {
-  let termSearched = searchInput.value.toLowerCase();
-  let matchingEpisodes = allEpisodes.filter((episode) => {
-    return (episode.summary + episode.name)
+function searchTerm(e) {
+  const searchBoxValue = e.target.value.toLowerCase();
+  let matchingShows = allShows.filter((show) => {
+    return (show.name + show.genre + show.summary)
       .toLowerCase()
-      .includes(termSearched);
+      .includes(searchBoxValue);
   });
-  makePageForEpisodes(matchingEpisodes);
+  makePageForShows(matchingShows);
 }
+// searchInput.addEventListener("input", searchTerm);
+
+// function searchTerm() {
+//   let termSearched = searchInput.value.toLowerCase();
+//   let matchingEpisodes = allEpisodes.filter((episode) => {
+//     return (episode.summary + episode.name)
+//       .toLowerCase()
+//       .includes(termSearched);
+//   });
+//   makePageForEpisodes(matchingEpisodes);
+// }
 
 // ------Add dropdown menu to select an episode---------------
 
-let episodeDropdown = document.getElementById("selectedEpisode");
-
 function makeEpisodeMenu() {
+  episodeDropdown.innerHTML = "";
   for (let i = 0; i < allEpisodes.length; i++) {
     let dropDownList = document.createElement("option");
 
