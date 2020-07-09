@@ -1,7 +1,7 @@
 //TV Show Project
 const allShows = getAllShows();
+// let episodeList;
 // let allEpisodes;
-// console.log(allEpisodes);
 const api_url = "https://api.tvmaze.com/shows/179/episodes";
 const episodeContainer = document.getElementById("cardContainer");
 const rootElem = document.getElementById("root");
@@ -9,6 +9,7 @@ const searchEpisodeInput = document.getElementById("searchEpisode");
 const searchShowInput = document.getElementById("searchShow");
 const episodesCount = document.getElementById("searchResult");
 const viewAllShowsButton = document.getElementById("viewAllShows");
+const viewAllEpisodes = document.getElementById("viewAllEpisodes");
 const showDropdown = document.getElementById("showDropdown");
 let episodeDropdown = document.getElementById("selectedEpisode");
 
@@ -25,16 +26,16 @@ allShows.sort((a, b) => {
   }
   return 0;
 });
-// console.log(allShows);
 
 // ------------------Fetch data from API--------------------------
 
-function getAllEpisodes(url) {
+function loadShows(url) {
   return fetch(url).then((response) => response.json());
 }
+
 //-------------------Setup the page onload------------------------
+
 function setup() {
-  // makePageForEpisodes(allEpisodes);
   makePageForShows(allShows);
   makeTvShowDropdownMenu();
 }
@@ -89,11 +90,12 @@ function makePageForShows(showList) {
 }
 
 //  ----------Display Episodes when show is clicked---------
+
 function showCliked(event) {
   episodeDropdown.innerHTML = "";
   let showId = event.target.id;
   // console.log(showId);
-  getAllEpisodes(`https://api.tvmaze.com/shows/${showId}/episodes`)
+  loadShows(`https://api.tvmaze.com/shows/${showId}/episodes`)
     .then((data) => {
       makePageForEpisodes(data);
       makeEpisodeMenu(data);
@@ -103,16 +105,13 @@ function showCliked(event) {
 }
 
 // ----------------Make page for episodes----------------------------
+
 function makePageForEpisodes(episodeList) {
   rootElem.innerHTML = "";
   episodeList.forEach((episode) => createCard(episode));
   episodesCount.innerText = `Displaying ${episodeList.length}/${episodeList.length} episodes`;
-
-  viewAllShowsButton.addEventListener("click", (e) => {
-    // makePageForEpisodes(allEpisodes);
-    makePageForShows(allShows);
-  });
 }
+
 //--------------- creates show dropdown menu-------------------------
 
 function makeTvShowDropdownMenu() {
@@ -126,7 +125,7 @@ function makeTvShowDropdownMenu() {
   showDropdown.addEventListener("change", function (e) {
     let showId = e.target.value;
     const url = `https://api.tvmaze.com/shows/${showId}/episodes`;
-    getAllEpisodes(url)
+    loadShows(url)
       .then((data) => {
         makePageForEpisodes(data);
         makeEpisodeMenu(data);
@@ -135,9 +134,19 @@ function makeTvShowDropdownMenu() {
       .catch((error) => console.log(error));
   });
 }
+
+// -------------hide shows button -----------------------------------------
+
 function hideShowDropdown() {
   showDropdown.style.display = "none";
 }
+
+//--------------hide episodes button ----------------------------------------
+
+function hideEpisodeDropdown() {
+  episodeDropdown.style.display = "none";
+}
+
 // -------------------create card for episodes --------------------------------
 
 function createCard(episode) {
@@ -193,19 +202,9 @@ function searchShow(e) {
   });
   makePageForShows(matchingShows);
 }
-//------------Search for episodes--------------------------------------
-// searchEpisodeInput.addEventListener("input", searchEpisode);
 
-// function searchEpisode() {
-//   let termSearched = searchEpisodeInput.value.toLowerCase();
-//   let matchingEpisodes = episodeList.filter((episode) => {
-//     return (episode.summary + episode.name)
-//       .toLowerCase()
-//       .includes(termSearched);
-//   });
-//   makePageForEpisodes(matchingEpisodes);
-//   console.log(matchingEpisodes);
-// }
+//------------Search for episodes--------------------------------------
+
 searchEpisodeInput.addEventListener("input", searchEpisode);
 function searchEpisode(e) {
   let termSearched = e.target.value.toLowerCase();
@@ -219,6 +218,19 @@ function searchEpisode(e) {
     }
   });
 }
+
+// searchEpisodeInput.addEventListener("input", searchEpisode);
+
+// function searchEpisode() {
+//   let termSearched = searchEpisodeInput.value.toLowerCase();
+//   let matchingEpisodes = episodeList.filter((episode) => {
+//     return (episode.summary + episode.name)
+//       .toLowerCase()
+//       .includes(termSearched);
+//   });
+//   makePageForEpisodes(matchingEpisodes);
+//   console.log(matchingEpisodes);
+// }
 
 // ----------Add dropdown menu to select an episode--------------------
 
@@ -236,13 +248,11 @@ function makeEpisodeMenu(data) {
     dropDownList.innerText = Option.value;
   }
 }
-// makeEpisodeMenu();
 
 //-----Displays the selected episode from the dropdown menu-------
 
 episodeDropdown.addEventListener("change", function (e) {
   theEpisode = e.target.value;
-  // console.log(episodeDropdown);
   theEpisode = theEpisode.slice(0, 6);
   let episodes = document.querySelectorAll(".cardDiv");
 
@@ -254,11 +264,23 @@ episodeDropdown.addEventListener("change", function (e) {
     }
   });
 });
-//------------add button to go back to all episodes-------------------
 
-// viewAllShowsButton.addEventListener("click", (e) => {
-//   // makePageForEpisodes(allEpisodes);
-//   makePageForShows(allShows);
-// });
+//------------add button to go back to all shows-------------------
+
+viewAllShowsButton.addEventListener("click", viewAllShows);
+
+function viewAllShows() {
+  makePageForShows(allShows);
+  hideEpisodeDropdown();
+  // should display shows dropdown again ????????????
+}
+// -------------- add button to go back to all episodes---------------
+
+// viewAllEpisodes.addEventListener("click", viewEpisodes);
+
+// function viewEpisodes() {
+//   makePageForEpisodes(EpisodeList);
+//   console.log(" i am clicked");
+// }
 
 window.onload = setup;
