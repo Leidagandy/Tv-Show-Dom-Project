@@ -45,12 +45,17 @@ const imageNotAvailable =
 function makePageForShows(showList) {
   rootElem.innerHTML = "";
 
+  episodesCount.innerText = `Displaying ${showList.length} shows`;
+  episodesCount.style.color = "white";
+  episodesCount.style.padding = "20px";
+
   showList.forEach(function (show) {
     const showCard = document.createElement("div");
     const showCardHeader = document.createElement("div");
     showCard.appendChild(showCardHeader);
 
     let showTitle = document.createElement("h2");
+    showTitle.classList.add("showTitle");
     const showLink = document.createElement("a");
     showLink.classList.add("showLink");
     showLink.href = "#";
@@ -67,20 +72,21 @@ function makePageForShows(showList) {
     );
     showCard.appendChild(showImage);
     showInfo = document.createElement("div");
-    showInfo.innerHTML = `<p>Genres:${show.genres}</p>
-    <p>Status:${show.status}</p>
-    <p>Rating:${show.rating.average}</p>
-    <p>Runtime:${show.runtime}</p>`;
+    showInfo.innerHTML = `<strong><p>${show.genres} | Rating:
+    ${show.rating.average} | ${show.runtime}min | ${show.status}</p></strong>`;
     showCard.appendChild(showInfo);
 
     const showSummary = document.createElement("p");
     showSummary.innerHTML = show.summary;
     showCard.appendChild(showSummary);
+
     rootElem.appendChild(showCard);
   });
   linksCliked = document.querySelectorAll(".showLink");
   linksCliked.forEach((link) => link.addEventListener("click", showCliked));
 }
+
+
 //  ----------Display Episodes when show is clicked---------
 function showCliked(event) {
   episodeDropdown.innerHTML = "";
@@ -99,7 +105,12 @@ function showCliked(event) {
 function makePageForEpisodes(episodeList) {
   rootElem.innerHTML = "";
   episodeList.forEach((episode) => createCard(episode));
-  episodesCount.innerText = `Displaying ${episodeList.length}/${episodeList.length}`; //correct this
+  episodesCount.innerText = `Displaying ${episodeList.length}/${episodeList.length} episodes`;
+  //  correct this
+  viewAllEpisodesButton.addEventListener("click", (e) => {
+    // makePageForEpisodes(allEpisodes);
+    makePageForShows(allShows);
+  });
 }
 //--------------- creates show dropdown menu-------------------------
 
@@ -129,7 +140,7 @@ function createCard(episode) {
   cardDiv.classList.add("cardDiv");
   let cardHeader = document.createElement("div");
   cardHeader.classList.add("cardHeader");
-  let episodeTitle = document.createElement("h2");
+  let episodeTitle = document.createElement("h3");
   let episodeSeason = document.createElement("h3");
   let cardImg = document.createElement("img");
   let summary = document.createElement("p");
@@ -177,17 +188,6 @@ function searchTerm(e) {
   });
   makePageForShows(matchingShows);
 }
-// searchInput.addEventListener("input", searchTerm);
-
-// function searchTerm() {
-//   let termSearched = searchInput.value.toLowerCase();
-//   let matchingEpisodes = allEpisodes.filter((episode) => {
-//     return (episode.summary + episode.name)
-//       .toLowerCase()
-//       .includes(termSearched);
-//   });
-//   makePageForEpisodes(matchingEpisodes);
-// }
 
 // ------Add dropdown menu to select an episode---------------
 
@@ -210,8 +210,8 @@ function makeEpisodeMenu(data) {
 //-----Displays the selected episode from the dropdown menu-------
 
 episodeDropdown.addEventListener("change", function (e) {
-  let theEpisode = e.target.value;
-  console.log(episodeDropdown);
+  theEpisode = e.target.value;
+  // console.log(episodeDropdown);
   theEpisode = theEpisode.slice(0, 6);
   let episodes = document.querySelectorAll(".cardDiv");
 
@@ -225,8 +225,9 @@ episodeDropdown.addEventListener("change", function (e) {
 });
 //------------add button to go back to all episodes-------------------
 
-viewAllEpisodesButton.addEventListener("click", (e) => {
-  makePageForEpisodes(allEpisodes);
-});
+// viewAllEpisodesButton.addEventListener("click", (e) => {
+//   // makePageForEpisodes(allEpisodes);
+//   makePageForShows(allShows);
+// });
 
 window.onload = setup;
