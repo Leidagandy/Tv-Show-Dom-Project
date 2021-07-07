@@ -5,15 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TV Show Project | Leida Goncalves (Leidagandy)</title>
     <link href="style.css" rel="stylesheet" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
+    <header>
+      <div id="page-header">
+        <select id="showDropdown">
+          <option>Select a show</option>
+        </select>
+        <select id="selectedEpisode">
+          <option id="selectOption">Select an episode</option></select
+        >
+        <!-- <button id="viewAllShows">Return to all shows</button> -->
+        <form>
+          <input id="searchShow" type="text" placeholder="Search shows..." />
+        </form>
+        <form>
+          <input id="searchEpisode" type="text" placeholder="Search episodes" />
+        </form>
+        <span id="searchResultEpisodes" style="background-color: black;"></span>
+        <span id="searchResultShows" style="background-color: black;"></span>
+      </div>
+    </header>
+
     <div id="root"></div>
+    <button id="viewAllShows">Return to all shows</button>
+    <button id="viewAllEpisodes">View all episodes</button>
+
+    <footer>
+      <p>Data from <a href="https://tvmaze.com" target="_blank">Tv Maze</a></p>
+    </footer>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
-    <script src="episodes.js"></script>
-
+    <script src="shows.js"></script>
+    <!-- <script src="episodes.js"></script> -->
     <!-- Loads YOUR javascript code -->
     <script src="script.js"></script>
   </body>
